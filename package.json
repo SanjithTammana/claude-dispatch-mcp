@@ -1,0 +1,16 @@
+{
+  "name": "claude-dispatch-mcp",
+  "version": "0.1.0",
+  "description": "A Codex MCP server that runs one locked-down, audited Claude Code CLI turn per call.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": { "claude-dispatch-mcp": "src/mcp_server.mjs" },
+  "files": ["src/", "docs/", "README.md", "SECURITY.md", "LICENSE"],
+  "engines": { "node": ">=24.2" },
+  "os": ["win32"],
+  "scripts": {
+    "test": "node test/config.test.mjs && node test/git_audit.test.mjs && node test/raw_audit.test.mjs && node test/preflight.test.mjs && node test/containment.test.mjs && node test/mcp_server.test.mjs && node test/jobrun.test.mjs && node test/claude_dispatch.test.mjs && node test/platform.test.mjs",
+    "doctor": "node src/claude_dispatch.mjs doctor",
+    "release-scan": "node scripts/release_scan.mjs"
+  }
+}

@@ -1,0 +1,10 @@
+# Runtime state never lives in the repository (it defaults to %LOCALAPPDATA%\claude-dispatch-mcp),
+# but keep stray evidence and local scan patterns out of history if someone relocates it here.
+node_modules/
+*.log
+/state/
+/runs/
+/packets/
+/bin/
+.release-scan.local
+.env*
