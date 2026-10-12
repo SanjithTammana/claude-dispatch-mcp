@@ -2,13 +2,15 @@
 // Offline contract tests: the fake executable is a Node script injected through main(), never the CLI.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs';
+import { existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
-import { tmpdir } from 'node:os';
+import { tmpdir as osTmpdir } from 'node:os';
 import { pathToFileURL } from 'node:url';
 import { changedPaths, gitExecutable, gitPhase } from '../src/git_audit.mjs';
 import { PREFLIGHT_ORDER } from '../src/preflight.mjs';
 import { markerExe } from './fixtures.mjs';
+// The dispatcher works with canonical paths; os.tmpdir() can be an 8.3 short path (CI runners: RUNNER~1).
+const tmpdir = () => realpathSync.native(osTmpdir());
 
 const repo = resolve(import.meta.dirname, '..');
 const dispatcher = join(repo, 'src', 'claude_dispatch.mjs');
