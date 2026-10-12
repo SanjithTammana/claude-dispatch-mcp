@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Unit tests for the path primitives in src/config.mjs that every placement check relies on.
 import assert from "node:assert/strict";
-import { linkSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { linkSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { hardLinks, localPath, overlaps } from "../src/config.mjs";
@@ -33,7 +33,8 @@ try {
     try { linkSync(file, twin); }
     catch (error) { if (["EPERM", "EACCES", "ENOTSUP"].includes(error.code)) { console.log("SKIP hard links unavailable ("+error.code+")"); return false; } throw error; }
     const names = hardLinks(file).map(n => n.toLowerCase()).sort();
-    assert.deepEqual(names, [file, twin].map(n => n.toLowerCase()).sort());
+    // hardLinks returns canonical names; tmpdir() can be an 8.3 short path (CI runners: RUNNER~1).
+    assert.deepEqual(names, [file, twin].map(n => realpathSync.native(n).toLowerCase()).sort());
   });
   // Native link creation can be unavailable in a sandbox. Independently exercise enumeration
   // failure modes with stat/spawn doubles; these do not establish native fsutil compatibility.
